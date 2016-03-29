@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>js-doodle</title>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+    <canvas id="my_canvas" width="1000" height="1000" style="margin: 0 auto;">
+        No html5 canvas support :/
+    </canvas>
+
+    <script>
+        var canvas = document.getElementById("my_canvas");
+        
+        var px1, py1, px2, py2, px3, py3;
+
+        px1 = random_number(0, 1000);
+        py1 = random_number(0, 1000);
+
+        px2 = random_number(0, 1000);
+        py2 = random_number(0, 1000);
+
+        px3 = random_number(0, 1000);
+        py3 = random_number(0, 1000);
+
+        doodle_triangle(px1, py1, px2, py2, px3, py3);
+
+        var random_middle_point_x = random_number(200, 800);
+        var random_middle_point_y = random_number(200, 800);
+
+        var timer_for_each_triangle = 500;
+
+        //doodle_triangle(random_middle_point_x, random_middle_point_y, 0, 0, 1000, 0);
+
+        //doodle_triangle(random_middle_point_x, random_middle_point_y, 1000, 0, 1000, 1000);
+
+        //doodle_triangle(random_middle_point_x, random_middle_point_y, 1000, 1000, 0, 1000);
+
+        //doodle_triangle(random_middle_point_x, random_middle_point_y, 0, 1000, 0, 0);
+
+        //doodle_triangle(random_middle_point_x, random_middle_point_y, 0, 0, 1000, 0);
+
+        //setTimeout(function () { doodle_triangle(random_middle_point_x, random_middle_point_y, 1000, 0, 1000, 1000); }, timer_for_each_triangle);
+        //timer_for_each_triangle += timer_for_each_triangle;
+
+        //setTimeout(function () { doodle_triangle(random_middle_point_x, random_middle_point_y, 1000, 1000, 0, 1000); }, timer_for_each_triangle);
+        //timer_for_each_triangle += timer_for_each_triangle;
+
+        //setTimeout(function () { doodle_triangle(random_middle_point_x, random_middle_point_y, 0, 1000, 0, 0); }, timer_for_each_triangle);
+
+        function random_number(min, max) {
+            return (Math.random() * (max - min)) + min;
+        }
+
+        function doodle_triangle(px1, py1, px2, py2, px3, py3)
+        {
+            var line = canvas.getContext("2d");
+
+            line.beginPath();
+
+            //Draws the outline triangle
+            line.moveTo(px1, py1);
+            draw_line(line, px2, py2);
+            draw_line(line, px3, py3);
+            draw_line(line, px1, py1);
+
+            //Inner lines
+            var inner_px, inner_py;
+
+            var inner_counter = 0;
+            var start_timer = 50;
+
+            wait_before_drawing();
+
+            function wait_before_drawing()
+            {
+                start_timer = start_timer * 0.8;
+
+                setTimeout(function ()
+                {
+                    for (var i = 0; i < 3; i++) {
+                        switch (i) {
+                            case 0:
+                                inner_px = ((px3 - px2) / 5) + px2;
+                                inner_py = ((py3 - py2) / 5) + py2;
+
+                                px2 = inner_px;
+                                py2 = inner_py;
+                                break;
+
+                            case 1:
+                                inner_px = ((px1 - px3) / 5) + px3;
+                                inner_py = ((py1 - py3) / 5) + py3;
+
+                                px3 = inner_px;
+                                py3 = inner_py;
+                                break;
+
+                            case 2:
+                                inner_px = ((px2 - px1) / 5) + px1;
+                                inner_py = ((py2 - py1) / 5) + py1;
+
+                                px1 = inner_px;
+                                py1 = inner_py;
+                                break;
+                        }
+                        draw_line(line, inner_px, inner_py);
+                    }
+
+                    if (++inner_counter < 20)
+                    {
+                        wait_before_drawing();
+                    }
+                }, start_timer);
+            }
+
+            function draw_line(line, px, py) {
+                line.lineTo(px, py);
+                line.stroke();
+            }
+        }
+    </script>
+</body>
+</html>
